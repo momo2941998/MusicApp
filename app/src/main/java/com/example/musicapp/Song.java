@@ -13,8 +13,8 @@ public class Song {
     }
 
     public Song(String title, int file) {
-        title = title;
-        file = file;
+        this.title = title;
+        this.file = file;
     }
 
     public String getTitle() {

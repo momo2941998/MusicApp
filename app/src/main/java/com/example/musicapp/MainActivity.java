@@ -34,12 +34,14 @@ public class MainActivity extends AppCompatActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying()){
+                if (mediaPlayer.isPlaying()){
                     mediaPlayer.pause();
-                    play.setImageResource(android.R.drawable.ic_media_pause);
-                }else {
-                    mediaPlayer.start();
                     play.setImageResource((android.R.drawable.ic_media_play));
+                }
+
+                else{
+                    mediaPlayer.start();
+                    play.setImageResource(android.R.drawable.ic_media_pause);
                 }
                 SetTotalTime();
             }
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 RenewMedia();
             }
         });
-
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
                 SetTotalTime();
             }
         });
+        /*
 
+
+
+*/
     }
 
     private  void  FindComponent(){
