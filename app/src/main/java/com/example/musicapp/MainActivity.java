@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -35,27 +36,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mediaPlayer.isPlaying()){
+                    // dừng và chuyển icon sang play
                     mediaPlayer.pause();
                     play.setImageResource((android.R.drawable.ic_media_play));
                 }
 
                 else{
+                    // chạy và chuyển icon sang dừng
                     mediaPlayer.start();
                     play.setImageResource(android.R.drawable.ic_media_pause);
                 }
+                // chuyển đổi total time khi chơi nhạc
                 SetTotalTime();
+                UpdateCurrentTime();
             }
         });
 
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // stop, release media đang phát
                 mediaPlayer.stop();
                 mediaPlayer.release();
+
+                // chuyển đổi nút play sang play
                 play.setImageResource(android.R.drawable.ic_media_play);
                 RenewMedia();
             }
         });
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
                 play.setImageResource(android.R.drawable.ic_media_pause);
                 SetTotalTime();
+                UpdateCurrentTime();
             }
         });
 
@@ -81,13 +91,27 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
                 play.setImageResource(android.R.drawable.ic_media_pause);
                 SetTotalTime();
+                UpdateCurrentTime();
             }
         });
-        /*
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // khi thay đổi
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // khi bắt đầu chạm
+            }
 
-*/
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // khi chạm xong, phát đúng thời gian seekBar kéo đến
+                mediaPlayer.seekTo(seekBar.getProgress());
+            }
+        });
     }
 
     private  void  FindComponent(){
@@ -112,12 +136,30 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
         totalTime.setText(timeFormat.format(mediaPlayer.getDuration()));
 
-        // cập nhật thời gian max của song
+        // cập nhật thời gian max của Song
         seekBar.setMax(mediaPlayer.getDuration());
     }
 
     private  void RenewMedia(){
         mediaPlayer = MediaPlayer.create(MainActivity.this, arraySong.get(position).getFile());
         title.setText(arraySong.get(position).getTitle());
+    }
+
+    private void UpdateCurrentTime(){
+        final Handler handler = new Handler();
+
+        // sau 0.1s tạo handler
+        handler.postDelayed(new Runnable() {
+            @Override
+
+            // tạo Runable để lấy thời gian hiện tại
+            public void run() {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
+                timeLast.setText(timeFormat.format(mediaPlayer.getCurrentPosition()));
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                // vòng lặp sau 0.1s cập nhật tiếp
+                handler.postDelayed(this,100);
+            }
+        }, 100);
     }
 }
