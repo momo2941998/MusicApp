@@ -6,8 +6,11 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Song> arraySong;
     int position = 0;
     MediaPlayer mediaPlayer;
-
+    Animation animation;
+    ImageView imageDisc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FindComponent();
+
         AddSong();
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
+
         RenewMedia();
         play.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mediaPlayer.isPlaying()){
                     // dừng và chuyển icon sang play
                     mediaPlayer.pause();
+
                     play.setImageResource((android.R.drawable.ic_media_play));
                 }
 
@@ -49,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 // chuyển đổi total time khi chơi nhạc
                 SetTotalTime();
                 UpdateCurrentTime();
+                imageDisc.startAnimation(animation);
             }
         });
 
@@ -123,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         previous     = (ImageButton) findViewById(R.id.btnPrevious);
         play         = (ImageButton) findViewById(R.id.btnPlay);
         stop        = (ImageButton) findViewById(R.id.btnStop);
+        imageDisc   = (ImageView) findViewById(R.id.imageViewDisc);
     }
 
     private void AddSong(){
@@ -157,6 +168,21 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
                 timeLast.setText(timeFormat.format(mediaPlayer.getCurrentPosition()));
                 seekBar.setProgress(mediaPlayer.getCurrentPosition());
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        position ++;
+                        if (position > arraySong.size() -1) position = 0;
+                        if(mediaPlayer.isPlaying())
+                            mediaPlayer.stop();
+                        RenewMedia();
+                        mediaPlayer.start();
+                        play.setImageResource(android.R.drawable.ic_media_pause);
+                        SetTotalTime();
+                        UpdateCurrentTime();
+                    }
+                });
                 // vòng lặp sau 0.1s cập nhật tiếp
                 handler.postDelayed(this,100);
             }

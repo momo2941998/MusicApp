@@ -81,6 +81,10 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="509dp"
         android:padding="5dp"
         android:text="Tên Bài Hát"
         android:textColor="#fff"
@@ -95,5 +99,15 @@
         android:layout_marginBottom="64dp"
         android:layout_toEndOf="@+id/btnPlay"
         app:srcCompat="@android:drawable/checkbox_off_background" />
+
+    <ImageView
+        android:id="@+id/imageViewDisc"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_above="@+id/timeLast"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="14dp"
+        app:srcCompat="@drawable/disc" />
 
 </RelativeLayout>
